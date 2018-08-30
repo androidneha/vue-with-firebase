@@ -25,22 +25,25 @@
         },
         methods: {
             deleteSmoothie(id) {
-                this.smoothies = this.smoothies.filter(smoothie => {
-                    return smoothie.id != id
-                })
-            },
-            createdSmoothie() {
-                db.collection('smoothie').get().then(snapshot => {
-                    snapshot.foreach(doc => {
-                        let smth = doc.data()
-                        smth.id = doc.id
-                        this.smoothies.push(smth)
+                db.collection('smoothies').doc(id).delete()
+                    .then(() => {
+                        this.smoothies = this.smoothies.filter(smoothie => {
+                            return smoothie.id !== id;
+                        });
+                    })
+            }
+        },
+        created() {
+            db.collection('smoothies').get()
+                .then(snapshot => {
+                    snapshot.forEach(doc => {
+                        let smoothie = doc.data();
+                        smoothie.id = doc.id;
+                        this.smoothies.push(smoothie)
                     })
                 })
-            }
         }
-    }
-    createdSmoothie();
+    };
 </script>
 
 <style scoped>
